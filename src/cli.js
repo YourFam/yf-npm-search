@@ -9,7 +9,7 @@ import { CliError } from './errors.js';
 import {
   searchPackages,
   fetchRegistryDoc,
-  fetchDownloads,
+  fetchDownloadRange,
   eighteenMonthRange,
   callCleanup,
   Pool,
@@ -22,8 +22,9 @@ import {
   takeConsoleRows,
 } from './model.js';
 import { renderTable, renderMarkdown, EXTRA_COLUMN_KEYS } from './render.js';
+import { sumDaily, sumLastDays } from './stats.js';
 
-const FOOTNOTE = 'Total = last 18 months (the longest range the npm downloads API returns).';
+const FOOTNOTE = 'Week = last 7 days. Total = last 18 months (the longest range the npm downloads API returns).';
 
 function collectExtraFlags(opts) {
   return EXTRA_COLUMN_KEYS.filter((key) => opts[key]);
@@ -52,7 +53,7 @@ async function markdownPrompt(suggestedPath, extraFlags) {
   const extraNames = extraFlags.map((flag) => `--${flag}`).join(', ');
   while (true) {
     if (extraFlags.length > 0) {
-      process.stdout.write('Console shows Name, Version, Published, Publisher, Developer, Total only.\n');
+      process.stdout.write('Console shows Name, Version, Published, Publisher, Developer, Week, Total only.\n');
       process.stdout.write(`Extra columns (${extraNames}) go to ${suggestedPath}.\n`);
     }
     const answer = (
@@ -88,7 +89,7 @@ async function confirmSearchTerms(cleaned, original) {
   }
 }
 
-async function loadRows(packages, writeMd, opts) {
+async function loadRows(packages) {
   const pool = new Pool(8);
   const rows = [];
   const tasks = [];
@@ -104,8 +105,8 @@ async function loadRows(packages, writeMd, opts) {
       maintainers: [],
       keywords: pkg.keywords ?? [],
       total: 0,
-      week: null,
-      month: null,
+      week: 0,
+      month: 0,
     };
     rows.push(row);
 
@@ -118,24 +119,12 @@ async function loadRows(packages, writeMd, opts) {
 
     tasks.push(
       pool.run(async () => {
-        row.total = await fetchDownloads(row.name, eighteenMonthRange());
+        const daily = await fetchDownloadRange(row.name, eighteenMonthRange());
+        row.total = sumDaily(daily);
+        row.week = sumLastDays(daily, 7);
+        row.month = sumLastDays(daily, 30);
       }),
     );
-
-    if (writeMd && opts.week) {
-      tasks.push(
-        pool.run(async () => {
-          row.week = await fetchDownloads(row.name, 'last-week');
-        }),
-      );
-    }
-    if (writeMd && opts.month) {
-      tasks.push(
-        pool.run(async () => {
-          row.month = await fetchDownloads(row.name, 'last-month');
-        }),
-      );
-    }
   }
 
   await Promise.all(tasks);
@@ -147,9 +136,9 @@ function usage() {
 
 One command. It reads the npm registry and prints one row per package.
 Scoped packages and their unscoped aliases are separate rows.
+Console: Name, Version, Published, Publisher, Developer, Week, Total.
 
 Options:
-  --week              Add last-week downloads to the Markdown file
   --month             Add last-month downloads to the Markdown file
   --maintainers       Add maintainer names to the Markdown file
   --description       Add the registry description to the Markdown file
@@ -226,7 +215,7 @@ export async function main(argv = process.argv.slice(2)) {
 
   // Load every row before printing anything.
   const { packages, total } = await searchPackages(searchText);
-  const rows = await loadRows(packages, writeMd, opts);
+  const rows = await loadRows(packages);
   classifyRows(rows);
   const families = sortFamilies(buildFamilies(rows), parsed.sort);
   const orderedRows = families.flatMap((family) => family.rows);

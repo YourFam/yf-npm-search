@@ -1,5 +1,4 @@
 const BOOLEAN_FLAGS = new Set([
-  'week',
   'month',
   'maintainers',
   'description',
@@ -13,7 +12,6 @@ const SORTS = new Set(['downloads', 'recent', 'name']);
 
 export function parseArgs(argv) {
   const opts = {
-    week: false,
     month: false,
     maintainers: false,
     description: false,

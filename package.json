@@ -1,6 +1,6 @@
 {
   "name": "@yourfam/yf-npm-search",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "It reads the npm registry and prints one row per package. Scoped packages and their unscoped aliases are separate rows, listed one after the other. The console is the default. A Markdown file is written only when asked.",
   "type": "module",
   "bin": {

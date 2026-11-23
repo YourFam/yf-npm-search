@@ -2,7 +2,7 @@ import { CliError } from './errors.js';
 
 const SEARCH_BASE = 'https://registry.npmjs.org/-/v1/search';
 const REGISTRY_BASE = 'https://registry.npmjs.org';
-const DOWNLOADS_BASE = 'https://api.npmjs.org/downloads/point';
+const DOWNLOADS_RANGE_BASE = 'https://api.npmjs.org/downloads/range';
 
 // Public cleanup service URL. The service is deployed separately (it injects
 // XAI_API_KEY via Doppler; this package never receives that key). Replace this
@@ -121,11 +121,12 @@ export function eighteenMonthRange() {
   return `${toDateString(start)}:${toDateString(end)}`;
 }
 
-export async function fetchDownloads(name, period) {
+export async function fetchDownloadRange(name, range) {
   await downloadsLimiter.acquire();
-  const url = `${DOWNLOADS_BASE}/${period}/${encodePackage(name)}`;
+  const url = `${DOWNLOADS_RANGE_BASE}/${range}/${encodePackage(name)}`;
   const data = await fetchJson(url, `the downloads request for ${name}`, { notFoundIsEmpty: true });
-  return data && typeof data.downloads === 'number' ? data.downloads : 0;
+  if (!data || !Array.isArray(data.downloads)) return [];
+  return data.downloads;
 }
 
 export async function callCleanup(text) {

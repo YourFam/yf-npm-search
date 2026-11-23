@@ -14,9 +14,9 @@ test('positional args kept in order', () => {
 });
 
 test('flags are not positional', () => {
-  const r = parseArgs(['@yourfam', '--week']);
+  const r = parseArgs(['@yourfam', '--month']);
   assert.deepEqual(r.positional, ['@yourfam']);
-  assert.equal(r.opts.week, true);
+  assert.equal(r.opts.month, true);
 });
 
 test('unknown option error', () => {

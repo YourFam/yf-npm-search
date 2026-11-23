@@ -6,13 +6,13 @@ const COLS = [
   { key: 'published', header: 'Published', align: 'left' },
   { key: 'publisher', header: 'Publisher', align: 'left' },
   { key: 'developer', header: 'Developer', align: 'left' },
+  { key: 'week', header: 'Week', align: 'right' },
   { key: 'total', header: 'Total', align: 'right' },
 ];
 
-export const EXTRA_COLUMN_KEYS = ['week', 'month', 'maintainers', 'description', 'keywords', 'url'];
+export const EXTRA_COLUMN_KEYS = ['month', 'maintainers', 'description', 'keywords', 'url'];
 
 const EXTRA_COLS = [
-  { key: 'week', header: 'Week' },
   { key: 'month', header: 'Month' },
   { key: 'maintainers', header: 'Maintainers' },
   { key: 'description', header: 'Description' },
@@ -46,6 +46,8 @@ function displayRow(row, colors) {
     publisherColored: row.publisher,
     developerPlain: row.developer,
     developerColored: row.developer,
+    weekPlain: String(row.week ?? 0),
+    weekColored: colors.bold(String(row.week ?? 0)),
     totalPlain: String(row.total),
     totalColored: colors.bold(String(row.total)),
   };
@@ -88,8 +90,6 @@ export function renderTable(rows, colors) {
 
 function extraValue(row, key) {
   switch (key) {
-    case 'week':
-      return row.week == null ? '0' : String(row.week);
     case 'month':
       return row.month == null ? '0' : String(row.month);
     case 'maintainers':
@@ -121,6 +121,7 @@ export function renderMarkdown(rows, extraFlags) {
       sanitizeCell(formatDate(row.published)),
       sanitizeCell(row.publisher),
       sanitizeCell(row.developer),
+      sanitizeCell(String(row.week ?? 0)),
       sanitizeCell(String(row.total)),
     ];
     const extraCells = activeExtra.map((col) => sanitizeCell(extraValue(row, col.key)));
