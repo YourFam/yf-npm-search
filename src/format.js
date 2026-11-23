@@ -37,5 +37,8 @@ export function sanitizeCell(value) {
 export function detectAlias(description) {
   if (!description) return null;
   const match = String(description).match(/Unscoped alias of\s+(@\S+)/);
-  return match ? match[1] : null;
+  if (!match) return null;
+  // Trailing sentence punctuation is not part of the package name. Strip it so
+  // "Unscoped alias of @yourfam/yf-merge-check." still pairs with the scoped package.
+  return match[1].replace(/[.,;:!?)\]}"']+$/, '');
 }

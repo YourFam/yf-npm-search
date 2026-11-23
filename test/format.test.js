@@ -41,3 +41,8 @@ test('detectAlias', () => {
   assert.equal(detectAlias('Just a package'), null);
   assert.equal(detectAlias(null), null);
 });
+
+test('detectAlias trims trailing punctuation', () => {
+  assert.equal(detectAlias('Unscoped alias of @yourfam/yf-merge-check.'), '@yourfam/yf-merge-check');
+  assert.equal(detectAlias('Unscoped alias of @yourfam/yf-merge-check, safe check'), '@yourfam/yf-merge-check');
+});

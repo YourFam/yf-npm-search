@@ -1,6 +1,6 @@
 {
   "name": "yf-npm-search",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Unscoped alias of @yourfam/yf-npm-search — it reads the npm registry and prints one row per package",
   "type": "module",
   "bin": {
@@ -40,6 +40,6 @@
     "access": "public"
   },
   "dependencies": {
-    "@yourfam/yf-npm-search": "0.1.0"
+    "@yourfam/yf-npm-search": "0.1.1"
   }
 }
