@@ -1,0 +1,34 @@
+{
+  "name": "@yourfam/yf-npm-search",
+  "version": "0.1.0",
+  "description": "It reads the npm registry and prints one row per package. Scoped packages and their unscoped aliases are separate rows, listed one after the other. The console is the default. A Markdown file is written only when asked.",
+  "type": "module",
+  "bin": {
+    "yf-npm-search": "bin/yf-npm-search.js"
+  },
+  "files": [
+    "bin",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "npm",
+    "search",
+    "registry",
+    "cli",
+    "downloads",
+    "markdown"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YourFam/yf-npm-search.git"
+  }
+}
