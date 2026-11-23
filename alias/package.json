@@ -1,0 +1,45 @@
+{
+  "name": "yf-npm-search",
+  "version": "0.1.0",
+  "description": "Unscoped alias of @yourfam/yf-npm-search — it reads the npm registry and prints one row per package",
+  "type": "module",
+  "bin": {
+    "yf-npm-search": "bin/yf-npm-search.js"
+  },
+  "files": [
+    "bin",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "npm",
+    "search",
+    "registry",
+    "cli",
+    "downloads",
+    "markdown"
+  ],
+  "author": {
+    "name": "YourFam",
+    "email": "kamal@yourfam.co",
+    "url": "https://github.com/YourFam"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YourFam/yf-npm-search.git",
+    "directory": "alias"
+  },
+  "bugs": {
+    "url": "https://github.com/YourFam/yf-npm-search/issues"
+  },
+  "homepage": "https://github.com/YourFam/yf-npm-search#readme",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@yourfam/yf-npm-search": "0.1.0"
+  }
+}
